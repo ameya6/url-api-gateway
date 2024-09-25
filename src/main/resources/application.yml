@@ -1,0 +1,103 @@
+server:
+  servlet:
+    context-path: /url-api
+  port: 10010
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: url-api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: duid-service
+          uri: http://localhost:10002
+          predicates:
+            - Path=/duid/**
+          filters:
+            - PrefixPath=/duid-service/api/v1/
+        - id: short-url-service
+          uri: http://localhost:10001
+          predicates:
+            - Path=/url/**
+          filters:
+            - PrefixPath=/short-url-service/api/v1/test/
+        - id: short-url-redis-service
+          uri: http://localhost:10003
+          predicates:
+            - Path=/redis/url/**
+          filters:
+            - PrefixPath=/short-url-redis-service/api/v1/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+
+---
+
+server:
+  servlet:
+    context-path: /url-api
+  port: 10010
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: url-api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: short-url-service
+          uri: http://192.168.0.206
+          predicates:
+            - Path=/url/**
+          filters:
+            - PrefixPath=/short-url-service/api/v1/test/
+        - id: duid-service
+          uri: http://192.168.0.206
+          predicates:
+            - Path=/duid/**
+          filters:
+            - PrefixPath=/duid-service/api/v1/
+        - id: short-url-redis-service
+          uri: http://localhost:10003
+          predicates:
+            - Path=/redis/url/**
+          filters:
+            - PrefixPath=/short-url-redis-service/api/v1/
+        - id: short-url-jpa-service
+          uri: http://localhost:10004
+          predicates:
+            - Path=/jpa/url/**
+          filters:
+            - PrefixPath=/short-url-jpa-service/api/v1/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+
+
+
