@@ -1,6 +1,4 @@
 server:
-  servlet:
-    context-path: /url-api
   port: 10010
 
 spring:
@@ -46,8 +44,6 @@ management:
 ---
 
 server:
-  servlet:
-    context-path: /url-api
   port: 10010
 
 spring:
